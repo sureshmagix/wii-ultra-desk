@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>WII Ultra Desk</title><link rel="stylesheet" href="styles.css"></head>
+<body><main>
+<header><div><p class="eyebrow">WIITRONICS · REMOTE WORKSPACE</p><h1>WII Ultra Desk</h1></div><span class="badge">Phase 1 · Foundation</span></header>
+<p class="intro">Your computers. One workspace.</p>
+<section class="notice">Development shell: remote desktop, SSH, file transfer and unattended connections are not implemented yet.</section>
+<div class="grid"><section><h2>Connection architecture</h2><p>Direct P2P with encrypted relay fallback.</p><p class="muted">Sessions will use authenticated device identities. Saving a device below does not grant access.</p><div class="modes"><span>Desktop</span><span>SSH</span><span>Files</span></div></section>
+<section><h2>Unattended access</h2><strong class="off">OFF · Not available in this build</strong><p class="muted">Planned: opt-in trusted devices, expiring permissions, immediate host-side revocation and audit history.</p></section></div>
+<section><h2>Saved devices</h2><p class="muted">Local bookmarks only. Pairing and identity verification arrive in Phase 2.</p>
+<form id="bookmark-form"><label>Device name<input id="device-name" required maxlength="80" placeholder="Office Ubuntu PC"></label><label>Device ID<input id="device-id" required minlength="6" maxlength="80" pattern="[A-Za-z0-9_-]{6,80}" placeholder="office-pc-01"></label><button type="submit">Save device</button></form>
+<p id="message" role="status" aria-live="polite"></p><ul id="devices"></ul></section>
+<footer>Local development build · No remote access service is running</footer>
+</main><script src="renderer.js"></script></body></html>

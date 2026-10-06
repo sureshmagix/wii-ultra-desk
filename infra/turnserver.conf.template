@@ -1,0 +1,33 @@
+# DESIGN TEMPLATE ONLY — tokens must be replaced and reviewed before use.
+# Never deploy with placeholder credentials. No live secrets are supplied.
+listening-port=3478
+tls-listening-port=5349
+fingerprint
+use-auth-secret
+static-auth-secret=REPLACE_WITH_HIGH_ENTROPY_SERVER_ONLY_SECRET
+realm=REPLACE_WITH_TURN_HOSTNAME
+server-name=REPLACE_WITH_TURN_HOSTNAME
+cert=REPLACE_WITH_ABSOLUTE_CERTIFICATE_PATH
+pkey=REPLACE_WITH_ABSOLUTE_PRIVATE_KEY_PATH
+# If behind NAT, configure external-ip=PUBLIC_IP/PRIVATE_IP after network review.
+min-port=49160
+max-port=49260
+user-quota=4
+total-quota=100
+stale-nonce=600
+no-cli
+no-multicast-peers
+no-tlsv1
+no-tlsv1_1
+# Deny relay access into private/local networks, including metadata endpoints.
+denied-peer-ip=0.0.0.0-0.255.255.255
+denied-peer-ip=10.0.0.0-10.255.255.255
+denied-peer-ip=100.64.0.0-100.127.255.255
+denied-peer-ip=127.0.0.0-127.255.255.255
+denied-peer-ip=169.254.0.0-169.254.255.255
+denied-peer-ip=172.16.0.0-172.31.255.255
+denied-peer-ip=192.168.0.0-192.168.255.255
+denied-peer-ip=224.0.0.0-255.255.255.255
+denied-peer-ip=::1
+denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff

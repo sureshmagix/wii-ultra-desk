@@ -1,0 +1,33 @@
+[Unit]
+Description=WII Ultra Desk coturn relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wii-ultra-turn
+Group=wii-ultra-turn
+SupplementaryGroups=wii-ultra-secrets
+ExecStart=/usr/bin/turnserver -c /etc/wii-ultra-desk/turnserver.conf
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+RuntimeDirectory=wii-ultra-turn
+RuntimeDirectoryMode=0750
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+ReadWritePaths=/run/wii-ultra-turn
+SystemCallArchitectures=native
+LimitNOFILE=65536
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

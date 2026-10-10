@@ -1,0 +1,35 @@
+[Unit]
+Description=WII Ultra Desk authenticated coordination service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wii-ultra
+Group=wii-ultra
+SupplementaryGroups=wii-ultra-secrets
+WorkingDirectory=/opt/wii-ultra-desk/current
+EnvironmentFile=/etc/wii-ultra-desk/staging.env
+ExecStart=/usr/bin/node services/coordinator/server.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+# Node/V8 requires executable JIT pages; do not enable MemoryDenyWriteExecute
+# without first changing the runtime to one that does not use V8 JIT.
+ReadWritePaths=/var/lib/wii-ultra-desk
+SystemCallArchitectures=native
+LimitNOFILE=8192
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

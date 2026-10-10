@@ -1,0 +1,121 @@
+[
+  {
+    "name": "default_off_without_policy",
+    "input": {},
+    "expected": { "allowed": false, "reason": "unattended_disabled" }
+  },
+  {
+    "name": "current_scoped_grant_allows_view",
+    "input": {
+      "now": 1000,
+      "capability": "desktop.view",
+      "peer": { "authenticated": true, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": {
+        "enabled": true,
+        "grants": [{
+          "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revoked": false,
+          "notBefore": 100,
+          "expiresAt": 2000,
+          "capabilities": ["desktop.view"]
+        }]
+      }
+    },
+    "expected": { "allowed": true, "reason": "trusted_device_grant" }
+  },
+  {
+    "name": "unverified_peer_denied",
+    "input": {
+      "now": 1000,
+      "capability": "desktop.view",
+      "peer": { "authenticated": false, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": { "enabled": true, "grants": [] }
+    },
+    "expected": { "allowed": false, "reason": "peer_not_authenticated" }
+  },
+  {
+    "name": "scope_does_not_escalate",
+    "input": {
+      "now": 1000,
+      "capability": "ssh",
+      "peer": { "authenticated": true, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": {
+        "enabled": true,
+        "grants": [{
+          "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revoked": false,
+          "notBefore": 100,
+          "expiresAt": 2000,
+          "capabilities": ["desktop.view"]
+        }]
+      }
+    },
+    "expected": { "allowed": false, "reason": "capability_denied" }
+  },
+  {
+    "name": "expired_grant_denied",
+    "input": {
+      "now": 2000,
+      "capability": "desktop.view",
+      "peer": { "authenticated": true, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": {
+        "enabled": true,
+        "grants": [{
+          "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revoked": false,
+          "notBefore": 100,
+          "expiresAt": 2000,
+          "capabilities": ["desktop.view"]
+        }]
+      }
+    },
+    "expected": { "allowed": false, "reason": "grant_not_current" }
+  },
+  {
+    "name": "revoked_grant_denied",
+    "input": {
+      "now": 1000,
+      "capability": "desktop.view",
+      "peer": { "authenticated": true, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": {
+        "enabled": true,
+        "grants": [{
+          "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revoked": true,
+          "notBefore": 100,
+          "expiresAt": 2000,
+          "capabilities": ["desktop.view"]
+        }]
+      }
+    },
+    "expected": { "allowed": false, "reason": "grant_revoked_or_invalid" }
+  },
+  {
+    "name": "duplicate_grants_fail_closed",
+    "input": {
+      "now": 1000,
+      "capability": "desktop.view",
+      "peer": { "authenticated": true, "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      "policy": {
+        "enabled": true,
+        "grants": [
+          {
+            "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "revoked": false,
+            "notBefore": 100,
+            "expiresAt": 2000,
+            "capabilities": ["desktop.view"]
+          },
+          {
+            "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "revoked": false,
+            "notBefore": 100,
+            "expiresAt": 2000,
+            "capabilities": ["desktop.view"]
+          }
+        ]
+      }
+    },
+    "expected": { "allowed": false, "reason": "missing_or_ambiguous_grant" }
+  }
+]

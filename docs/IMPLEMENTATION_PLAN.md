@@ -8,16 +8,51 @@ and relay template. No authenticated remote operations exist.
 
 Validation results are recorded separately in VALIDATION.md.
 
-## Phase 2 — authenticated connectivity
+## Phase 2A — device identity and authenticated coordination
 
-- Select and review identity/pairing protocol; generate device keys in protected storage.
-- Authenticated registration, presence and signaling with rate limits and revocation.
-- WebRTC transport in UI and native agent; do not rely on Electron staying open
-  for headless/unattended transport.
-- Short-lived TURN credentials, private-peer restrictions, allocation quotas.
-- Host authorization enforcement and session binding; port policy tests to Rust.
-- Verify two distinct internet connections, same LAN, CGNAT, blocked UDP,
-  forced relay and identity spoof/replay rejection. Capture route evidence.
+Implemented and test-covered in this source package: native-agent Ed25519 and
+Noise static identity generation; protected-store source integration; SQLite
+trust/grant migrations; Node coordinator Ed25519 challenge authentication;
+immutable locator/key registration; single-use invitations; host approval gate;
+opaque pairing-frame routing; bilateral signed trust attestations; restricted
+presence/signaling; expiry, request-size, rate, and connection limits; shared
+JavaScript/Rust unattended-policy vectors; and a redacted Electron status view.
+
+Not complete: a native-agent-to-native-agent Noise transport, human SAS
+confirmation UI, agent-to-coordinator client, credential-checked local IPC
+server, and a live two-agent pair command. The coordinator trust-attestation
+test is a coordinator authorization test, not evidence that Noise pairing has
+completed. See ADR 0001.
+
+## Phase 2B — authenticated WebRTC transport boundary
+
+Implemented and actually tested on local Intel macOS: the Rust agent has a
+pure-Rust WebRTC data-channel transport, bounded status-only messages and
+backpressure, signed short-lived SDP envelopes, replay/substitution/expiry
+rejection, host/direct selected-candidate evidence, rustls-backed native
+coordinator challenge authentication, and a coordinator TURN REST credential
+endpoint guarded by trust and `desktop.view`. The coturn local fixture provides
+generated local secrets, quotas, a bounded port range, and private-destination
+restrictions; it was not launched here.
+
+Still required before this is a real two-device product connection:
+
+- Wire Noise XX frames and transcript bindings through two native agents; require
+  host local approval and independent SAS confirmation before writing trust.
+- Implement and validate credential-checked local IPC on macOS, Windows and
+  Linux. Electron main must use it; renderers remain unprivileged.
+- Connect two live agents through the authenticated coordinator, consume signed
+  offers/answers/candidates, request scoped TURN credentials, and enforce a
+  fresh local `desktop.view` decision on every new/reconnected session.
+- Add the session controller state machine: cancellation, expiry, cleanup,
+  bounded retry/backoff, reauthentication after reconnect, ICE restart, and
+  desktop diagnostics fed from selected candidate pairs rather than guesses.
+- Validate actual same-LAN, server-reflexive, forced-relay, allocation failure,
+  credential expiry, CGNAT, blocked UDP, and TURN/TLS cases on target hardware.
+
+See [ADR 0002](adr/0002-native-webrtc-transport-and-turn.md) and
+[WEBRTC_TESTING.md](WEBRTC_TESTING.md). The existing direct test is host/direct
+loopback evidence only, not a completed native pairing or relay fallback claim.
 
 ## Phase 3 — desktop control
 

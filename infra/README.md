@@ -1,5 +1,14 @@
 # Relay deployment notes
 
+For a generated-secret, intentionally non-production local coturn fixture, see
+[`coturn/README.md`](coturn/README.md). It has a bounded relay range and quotas
+but must not be mistaken for a validated relay fallback or a production Utho
+deployment.
+
+For the repository-only Ubuntu staging configuration, operational sequence, and
+explicitly unvalidated production checks, see
+[`../docs/DEPLOY_UTHO.md`](../docs/DEPLOY_UTHO.md).
+
 turnserver.conf.template is a planning template, not a validated production
 configuration. No coturn service is installed by this package. Validate syntax
 and all IPv4/IPv6 destination restrictions against the selected coturn release.

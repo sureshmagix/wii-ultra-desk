@@ -2,6 +2,11 @@
   "name": "wii-ultra-desk",
   "version": "0.1.0",
   "private": true,
+  "main": "apps/desktop/main.cjs",
+  "author": {
+    "name": "WII Ultra Desk contributors",
+    "email": "maintainers@wii-ultra-desk.invalid"
+  },
   "description": "WII Ultra Desk — Phase 5 operational unattended-access lifecycle",
   "engines": {
     "node": ">=22.12.0"
@@ -23,10 +28,15 @@
     "test:native-file-session": "npm run build:agent && node scripts/native-file-session-harness.mjs",
     "test:native-unattended-lifecycle": "npm run build:agent && node scripts/native-unattended-lifecycle-harness.mjs",
     "coturn:env": "node infra/coturn/generate-local-env.mjs",
-    "desktop": "npm run build:desktop-ui && electron apps/desktop/main.cjs"
+    "desktop": "npm run build:desktop-ui && electron apps/desktop/main.cjs",
+    "dist:mac:intel": "node scripts/package-desktop.mjs --target mac-intel",
+    "dist:mac:silicon": "node scripts/package-desktop.mjs --target mac-silicon",
+    "dist:win": "node scripts/package-desktop.mjs --target windows",
+    "dist:ubuntu": "node scripts/package-desktop.mjs --target ubuntu"
   },
   "devDependencies": {
     "electron": "44.5.1",
+    "electron-builder": "26.15.3",
     "esbuild": "0.28.2"
   },
   "dependencies": {
@@ -35,5 +45,52 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "ws": "8.22.0"
+  },
+  "build": {
+    "appId": "org.wiiultra.desk",
+    "productName": "WII Ultra Desk",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "apps/desktop/**/*",
+      "package.json",
+      "!apps/desktop/ui/renderer.jsx"
+    ],
+    "extraResources": [
+      {
+        "from": ".release-resources/agent/${os}-${arch}",
+        "to": "agent",
+        "filter": [
+          "wii-ultra-desk-agent",
+          "wii-ultra-desk-agent.exe"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg"
+      ],
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "${productName}-${version}-win-${arch}-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "category": "Utility",
+      "target": [
+        "deb"
+      ],
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
+    }
   }
 }

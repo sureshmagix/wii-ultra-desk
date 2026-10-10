@@ -86,14 +86,39 @@ constraints do not conflict with the agreed x64/ARM64 product targets, but Ubunt
 validation must use a supported desktop environment. See
 [platform support](docs/PLATFORM_SUPPORT.md).
 
-Electron bundles its runtime for end users; platform-specific installers are
-planned later. Do not disable Electron sandboxing to work around a launch issue.
+Electron bundles its runtime for end users. The repository now has repeatable
+local packaging commands; the resulting artifacts remain unsigned development
+builds, not supported product releases. Do not disable Electron sandboxing to
+work around a launch issue.
 
 The shell uses React/JSX bundled locally by esbuild. Set `WII_AGENT_BINARY` to
 an operator-configured absolute built-agent path and `WII_AGENT_STATE_DIR` before starting
 a desktop session; the renderer cannot choose an executable or read agent
 secrets. Bookmarks are stored under Electron's userData directory in
 bookmarks.json, not in the source tree. They contain no passwords or trust grants.
+
+## Build desktop packages
+
+Each packaging command builds the React bundle, compiles the matching native
+agent in release mode, and places it under the packaged app's `resources/agent`
+directory. Artifacts are written to the ignored `release/` directory and
+publishing is disabled.
+
+```bash
+npm run dist:mac:intel
+npm run dist:mac:silicon
+WII_ZIG_BINARY=/absolute/path/to/zig npm run dist:ubuntu
+WII_WINDOWS_GNU_TOOLCHAIN_BIN=/absolute/path/to/mingw/bin npm run dist:win
+```
+
+The Ubuntu cross-build requires Zig `0.17.0`. A Windows package built off
+Windows requires a complete `x86_64-w64-mingw32` toolchain, including its
+runtime/import libraries; the command deliberately fails without it rather
+than emitting an agentless installer. Before distributing any artifact, replace
+the Debian maintainer placeholder `maintainers@wii-ultra-desk.invalid`, add a
+custom icon, and obtain the applicable Windows/macOS signing and macOS
+notarization credentials. Physical clean-machine install and runtime validation
+remain mandatory.
 
 ## Build the agent probe
 

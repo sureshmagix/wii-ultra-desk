@@ -17,7 +17,7 @@ bytes = "=1.12.1"
 cap-std = "=4.0.3"
 ed25519-dalek = { version = "=2.1.1", features = ["rand_core"] }
 futures-util = "=0.3.32"
-keyring = { version = "=3.6.3", features = ["apple-native", "windows-native", "sync-secret-service"] }
+keyring = { version = "=3.6.3", features = ["apple-native", "windows-native", "sync-secret-service", "vendored"] }
 libc = "=0.2.190"
 portable-pty = "=0.9.0"
 rand_core = { version = "=0.6.4", features = ["getrandom"] }

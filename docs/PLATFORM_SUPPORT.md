@@ -15,10 +15,10 @@ so this version must be reviewed and deliberately updated before a release.
 
 | Target | Runtime compatibility | Foundation validation | Product/package status | Required next validation |
 | --- | --- | --- | --- | --- |
-| macOS 13 Ventura, Intel x64 | Compatible with Electron 44 | Host OS detected locally; Electron shell launched and remained running, but no visual or permission-flow inspection | Planned signed/notarized DMG or PKG | Screen recording, Accessibility, multi-monitor/DPI, launch-agent behavior, signing and notarization |
-| macOS 13+, Apple Silicon arm64 | Compatible runtime architecture | Not run; no Apple Silicon hardware available | Planned native signed/notarized DMG or PKG | Same as Intel on physical Apple Silicon hardware |
-| Windows x64 | Compatible runtime architecture | Not run | Planned signed EXE installer | Input, DPI, multi-monitor, UAC/service boundaries, clean install/upgrade/uninstall |
-| Ubuntu x64 (GNOME/KDE; X11 and Wayland) | Compatible runtime architecture | Not run | Planned DEB with bundled runtime | Test X11 and Wayland independently, portals/permissions, clean install/upgrade/uninstall |
+| macOS 13 Ventura, Intel x64 | Compatible with Electron 44 | Unsigned DMG and x64 native agent built locally; the image checksum verified. No visual or permission-flow inspection. | Unsigned/notarized development DMG built; not a release. | Screen recording, Accessibility, multi-monitor/DPI, launch-agent behavior, signing, notarization, and clean install. |
+| macOS 13+, Apple Silicon arm64 | Compatible runtime architecture | arm64 agent and unsigned DMG cross-built from Intel macOS; image checksum verified. No Apple Silicon runtime result. | Unsigned/notarized development DMG built; not a release. | Same physical validation, signing, notarization, and clean install on Apple Silicon hardware. |
+| Windows x64 | Compatible runtime architecture | Not run. The package command fails on this Mac without a complete MinGW x64 toolchain; no artifact was emitted. | Packaging configuration only; planned signed EXE installer. | Provision a pinned Windows/MinGW build environment, then test input, DPI, multi-monitor, UAC/service boundaries, clean install/upgrade/uninstall. |
+| Ubuntu x64 (GNOME/KDE; X11 and Wayland) | Compatible runtime architecture | Native agent cross-built and embedded in an unsigned Debian package; archive contents inspected. No Ubuntu install or runtime test. | Unsigned development DEB built; not a release. | Test X11 and Wayland independently, portals/permissions, clean install/upgrade/uninstall, package dependencies, and signing policy. |
 | ARM64 Linux / Raspberry Pi | Compatible runtime architecture | Not run; no board/toolchain available | Planned ARM64 DEB plus separately scoped headless agent | Record exact model/OS/graphics session, capture/input permissions, encoder measurements, and installer lifecycle |
 | NVIDIA Jetson ARM64 | Compatible runtime architecture subject to distro libraries | Not run; no Jetson/JetPack available | Conditional native package | Record exact module, JetPack, Ubuntu/glibc, graphics stack, encoder path, and installer lifecycle |
 
@@ -31,7 +31,11 @@ so this version must be reviewed and deliberately updated before a release.
 - Electron 44 no longer supports the Unity desktop environment. Ubuntu testing
   must use a supported desktop environment and include both X11 and Wayland
   where the product claims either.
-- No installer, service manager, or production TURN deployment is implemented.
+- Local unsigned macOS DMGs and an Ubuntu DEB can be built, but no signed,
+  notarized, clean-machine-tested installer release exists. The default Electron
+  icon is currently used and the Debian maintainer address is an `.invalid`
+  placeholder that must be replaced before distribution.
+  No production TURN deployment is implemented.
   Phase 4 adds a deliberately restricted native SSH/file implementation but
   never installs or enables an SSH service. Phase 3 adds a deliberately
   narrow macOS-first capture/input adapter; compatible Electron runtimes do

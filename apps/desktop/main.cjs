@@ -134,8 +134,9 @@ function validatedDesktopInput(value) {
 
 function agentBinary() {
   const binary = process.env.WII_AGENT_BINARY;
-  if (!binary || !path.isAbsolute(binary)) throw new Error('Native agent is not configured. Set WII_AGENT_BINARY to an absolute agent path.');
-  return binary;
+  if (binary && path.isAbsolute(binary)) return binary;
+  if (app.isPackaged) return path.join(process.resourcesPath, 'agent', process.platform === 'win32' ? 'wii-ultra-desk-agent.exe' : 'wii-ultra-desk-agent');
+  throw new Error('Native agent is not configured. Set WII_AGENT_BINARY to an absolute agent path.');
 }
 
 function desktopStatus() {

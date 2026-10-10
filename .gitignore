@@ -1,6 +1,8 @@
 node_modules/
 target/
 dist/
+release/
+.release-resources/
 .env
 infra/coturn/.env
 *.pem

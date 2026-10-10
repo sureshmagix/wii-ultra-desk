@@ -1,17 +1,65 @@
 # Progress — 10 October 2026
 
-## Release validation — 10 October 2026
+## Electron package build — 10 October 2026
 
-The current Phase 5 commit candidate was revalidated without source changes.
+### Changed
+
+- Added pinned `electron-builder` 26.15.3 and repeatable `dist:mac:intel`,
+  `dist:mac:silicon`, `dist:ubuntu`, and `dist:win` commands. Each command
+  builds the UI and matching Rust release agent, stages that exact target under
+  the package resources, and disables publishing.
+- Packaged Electron uses its bundled native agent. Development mode still
+  requires the existing explicit, absolute `WII_AGENT_BINARY`; a renderer
+  cannot select any executable.
+- The Linux protected-store dependency now enables keyring's documented
+  vendored D-Bus support, allowing the Ubuntu x64 agent to cross-build without
+  an Ubuntu D-Bus sysroot. `agent/Cargo.lock` records the added static build
+  dependencies.
+- Added Zig-backed Linux cross-compiler wrappers. Ubuntu packaging requires an
+  absolute `WII_ZIG_BINARY` at the checked Zig 0.17.0 version. Windows
+  packaging off Windows now explicitly requires an absolute
+  `WII_WINDOWS_GNU_TOOLCHAIN_BIN` containing a complete MinGW x64 toolchain;
+  it fails before building if absent.
+- Added packaging documentation and ignore rules for generated release/staging
+  files. Debian metadata uses the non-routable temporary address
+  `maintainers@wii-ultra-desk.invalid` because no project maintainer address
+  exists in the checkout; it must be replaced before any distribution.
+
+### Built artifacts
+
+| Target | Result |
+| --- | --- |
+| macOS Intel x64 | `release/WII Ultra Desk-0.1.0-mac-x64.dmg` built and `hdiutil verify` passed; its bundled agent is Mach-O x86_64. |
+| macOS Apple Silicon arm64 | `release/WII Ultra Desk-0.1.0-mac-arm64.dmg` cross-built and `hdiutil verify` passed; its bundled agent is Mach-O arm64. |
+| Ubuntu x64 | `release/WII Ultra Desk-0.1.0-linux-amd64.deb` built; archive inspection found the embedded x86_64 ELF native agent. |
+| Windows x64 | No artifact. The command stopped before compilation because this Intel Mac has no complete MinGW x64 toolchain. |
+
+All generated artifacts are ignored and remain local. The macOS images are
+unsigned/notarized, all packages use the default Electron icon, and no
+clean-machine installation or non-macOS runtime test has occurred.
+
+### Commands run and actual results
 
 | Command | Result |
 | --- | --- |
-| `npm run build` | Passed: desktop UI build, syntax/repository hygiene for 25 JavaScript files, all 25 Node tests, and locked native-agent build. |
-| `npm run test:native-unattended-lifecycle` | Passed on this macOS host: the daemon remained independent of Electron, rejected malformed local IPC, and acknowledged signed remote revocation only after host-side termination state changed. |
-| `cargo fmt --manifest-path agent/Cargo.toml -- --check`; `git diff --check` | Passed. |
+| `npm run dist:mac:intel`; `npm run dist:mac:silicon` | Passed. Both final DMGs were built with their matching release agents and image checks passed. Electron Builder reported no available Developer ID identity, so it skipped signing. |
+| `WII_ZIG_BINARY=…/zig npm run dist:ubuntu` | Passed with checksum-verified official Zig 0.17.0 in an isolated temporary directory. The final DEB contains the x86_64 ELF agent. |
+| `npm run dist:win` | Correctly stopped with `WII_WINDOWS_GNU_TOOLCHAIN_BIN` missing; no agentless or partial Windows installer was created. Earlier Zig-only linking was rejected because it lacks the MinGW runtime/import library set required by the Rust GNU target. |
+| `npm run build`; `npm run test:agent` | Passed: 28 JavaScript files checked, all 25 Node tests passed, locked native build passed, and all 22 Rust tests passed. |
+| `npm audit --json` | Found eight moderate vulnerabilities only in the new Electron Builder development dependency chain. The advisory proposes electron-builder 26.5.0 as a semver-major fix despite the installed 26.15.3 pin; do not downgrade or apply an unreviewed audit fix. |
+| `git diff --check` | Passed. |
 
-The platform and two-machine limitations, blockers, and next task remain those
-recorded in the Phase 5 handoff below.
+### Exact next task
+
+Provision a clean Windows x64 build host or a complete pinned MinGW x64
+toolchain (and any required NSIS/Wine packaging support), then build and inspect
+the Windows installer with the bundled `.exe` agent. Obtain a real package
+maintainer address, custom icons, Developer ID/Windows signing identities and
+macOS notarization credentials; rebuild signed artifacts and validate install,
+upgrade, uninstall, launch, credential-store behavior, service lifecycle, and
+supported runtime features on clean physical Windows, Intel/Apple Silicon
+macOS, and Ubuntu X11/Wayland machines. Do not treat cross-build success as
+desktop, SSH/file, or unattended-runtime support.
 
 ## Phase 5 — operational unattended-access lifecycle and background services
 

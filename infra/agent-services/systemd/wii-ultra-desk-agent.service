@@ -1,0 +1,27 @@
+[Unit]
+Description=WII Ultra Desk per-user unattended access agent
+After=graphical-session.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Replace this path only as part of a reviewed package install. This unit is
+# intentionally a *user* service: it can use the signed user's protected
+# credential store and, when support exists, the user's capture/input consent.
+ExecStart=%h/.local/lib/wii-ultra-desk/wii-ultra-desk-agent daemon --state-dir %h/.local/state/wii-ultra-desk
+EnvironmentFile=-%h/.config/wii-ultra-desk/agent.env
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=%h/.local/state/wii-ultra-desk
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=default.target

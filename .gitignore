@@ -2,7 +2,14 @@ node_modules/
 target/
 dist/
 .env
+infra/coturn/.env
 *.pem
 *.key
 *.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.wii-ultra-desk-agent/
+apps/desktop/ui/renderer.bundle.js
+apps/desktop/ui/xterm.css
 .DS_Store

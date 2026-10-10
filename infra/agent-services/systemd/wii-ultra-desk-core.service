@@ -1,0 +1,35 @@
+[Unit]
+Description=WII Ultra Desk headless core agent (SSH/files only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wii-ultra-desk
+Group=wii-ultra-desk
+# This system service intentionally has its own protected identity/state. It
+# must be separately paired; it never shares a logged-in user's desktop keys.
+ExecStart=/usr/lib/wii-ultra-desk/wii-ultra-desk-agent daemon --state-dir /var/lib/wii-ultra-desk
+EnvironmentFile=-/etc/wii-ultra-desk/agent.env
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+StateDirectory=wii-ultra-desk
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+ReadWritePaths=/var/lib/wii-ultra-desk
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

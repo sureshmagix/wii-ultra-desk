@@ -1,0 +1,568 @@
+WII ULTRA DESK — COMPLETE CODEX TERMINAL PROMPTS
+Exported: 7 October 2026
+Repository: https://github.com/sureshmagix/wii-ultra-desk
+
+HOW TO USE
+Use the prompts one at a time, in order. Let Codex implement and verify each
+stage before moving to the next. Paste each prompt into Codex, not the shell.
+All 11 prompts from the previous response are included below without shortening.
+Section numbering follows that response: section 1 contains terminal commands;
+sections 2–12 contain the prompts.
+
+1. OPEN THE REPOSITORY IN CODEX
+
+If you have not cloned it, run in your terminal:
+
+git clone https://github.com/sureshmagix/wii-ultra-desk.git
+cd wii-ultra-desk
+codex
+
+If you already have it locally, open that directory and run:
+
+git status
+codex
+
+On first launch, select Sign in with ChatGPT.
+Official installation instructions:
+https://learn.chatgpt.com/docs/codex/cli
+
+2. FIRST PROMPT — ESTABLISH PROJECT INSTRUCTIONS AND VERIFY THE FOUNDATION
+
+BEGIN PROMPT
+You are continuing development of WII Ultra Desk.
+
+Repository:
+https://github.com/sureshmagix/wii-ultra-desk
+
+Inspect the actual local checkout before changing anything. Do not assume the
+repository still matches an earlier description.
+
+PRODUCT REQUIREMENTS
+
+Build a complete installable remote-access application with:
+1. Bidirectional remote desktop viewing and keyboard/mouse control.
+2. Electron desktop application for Windows, Ubuntu, macOS Intel and Apple Silicon.
+3. Support for compatible ARM64 Linux devices, including Raspberry Pi and Jetson.
+4. Direct P2P connectivity with automatic encrypted TURN relay fallback.
+5. Auto quality, Clear text, Smooth motion and Low bandwidth modes.
+6. Real SSH sessions between authorized devices.
+7. Bidirectional resumable file transfer.
+8. Saved devices and verified trusted-device identities.
+9. Explicitly enabled unattended access with scoped permissions and revocation.
+10. Complete platform-specific installers with bundled application runtimes.
+
+AGREED ARCHITECTURE
+
+- Electron and React frontend, using JavaScript/JSX.
+- Node.js JavaScript coordination backend.
+- No TypeScript in application code.
+- Rust native agent for platform integration and background operation.
+- WebRTC for session transport.
+- coturn for STUN/TURN.
+- Self-hosted coordination and relay services on Utho.
+- SQLite for persistent application metadata where appropriate.
+- Protected OS storage for credentials and identity keys.
+- Bookmarks must remain separate from authorization grants.
+
+WORKING RULES
+
+- Read existing AGENTS.md files and project documentation first.
+- Preserve existing work and unrelated local changes.
+- Inspect git status, branch and remote before editing.
+- Use a feature branch for this task. Do not reset, clean or force-push.
+- Make reasonable implementation decisions and document them.
+- Implement the requested stage; do not stop after proposing a plan.
+- Use current official documentation when choosing APIs or dependencies.
+- Pin resolved dependency versions and maintain lockfiles.
+- Never invent cryptographic protocols or silently weaken authentication.
+- Never disable Electron sandboxing, TLS verification or SSH host-key checking.
+- No passwords, signing keys, tokens or TURN shared secrets in source control.
+- Do not deploy, publish releases or modify external infrastructure unless asked.
+- Do not claim runtime tests, platform support or security audits that were not run.
+- Clearly distinguish implemented, tested, untested, blocked and planned features.
+- If hardware or credentials are unavailable, complete independent work and
+  document the exact remaining validation procedure.
+- Before ending a task, update docs/PROGRESS.md with changes, commands run,
+  results, blockers and the next task.
+- Do not commit or push automatically. Leave changes ready for review.
+
+CURRENT TASK: FOUNDATION READINESS
+
+1. Inspect README.md, package.json, docs/, apps/, services/, packages/, agent/
+   and existing tests.
+2. Check README.md for malformed encoding or NUL characters and repair it
+   without deleting valid content.
+3. Create or carefully update the root AGENTS.md with concise project rules
+   from this prompt, preserving applicable existing guidance.
+4. Inspect the actual development OS, CPU architecture and installed tools.
+5. Run the existing tests and investigate failures.
+6. Select and pin a compatible Electron version. Account for Intel macOS
+   Ventura as a desired target; report any conflict with supported dependencies.
+7. Verify that the Electron shell starts on the available desktop environment.
+   If no GUI environment is available, report this as untested.
+8. Build and run the Rust status probe if the toolchain is available.
+9. Add appropriate repeatable lint, test and build commands without replacing
+   meaningful tests with implementation-mirroring checks.
+10. Add CI for checks that can actually run, using minimum workflow permissions.
+11. Create docs/PROGRESS.md and docs/PLATFORM_SUPPORT.md.
+12. Record the next phase as authenticated connectivity, not remote desktop.
+
+At the end provide:
+- What changed.
+- Commands executed and actual results.
+- Current platform/toolchain limitations.
+- Exact commands for me to run locally.
+- Whether the project is ready for the next prompt.
+
+Start inspecting and implementing now.
+END PROMPT
+
+3. SECOND PROMPT — DEVICE IDENTITY, PAIRING AND AUTHORIZATION
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and the current repository state.
+
+Implement Phase 2A: device identity, authenticated pairing, persistent trust
+and authenticated coordination.
+
+First inspect docs/PROGRESS.md and verify the foundation. Preserve existing
+features and local changes. Work on an appropriate feature branch.
+
+REQUIREMENTS
+
+1. Introduce durable device identities generated with established cryptographic
+   libraries and stored securely by the native agent.
+2. Separate device locator IDs, user-friendly names, identity fingerprints,
+   bookmarks and trusted-device grants.
+3. Design the pairing flow using an established authenticated protocol.
+   Document the protocol, library choice, threat assumptions and trust bootstrap
+   in an architecture decision record before integrating it.
+4. Support attended pairing with local host approval and verified identity
+   confirmation. An ID or unverified public key must never grant access.
+5. Protect pairing against guessing, replay, duplicate acceptance and expiry.
+6. Authenticate device registration, presence and signaling connections.
+   Never trust a client-provided authenticated=true field.
+7. Enforce request size limits, schema validation, rate limits, connection limits,
+   session expiry and authorization for signaling destinations.
+8. Persist trust and grants with migrations and atomic updates.
+9. Define capabilities:
+   desktop.view
+   desktop.control
+   ssh
+   files.read
+   files.write
+10. Port the existing unattended policy rules into the Rust enforcement boundary
+    and run shared conformance test vectors against both implementations.
+11. Keep unattended access OFF by default. Do not enable remote execution yet.
+12. Define authenticated, access-controlled local IPC between Electron and agent.
+    Restrict it to the expected local user/service identities.
+13. Add device/pairing status to the desktop interface without exposing secrets.
+14. Ensure a compromised coordinator cannot silently replace a previously
+    trusted peer identity. Document first-pairing verification requirements.
+
+TESTS
+
+Cover invalid credentials, spoofed IDs, substituted keys, replay, expired pairing,
+rate limiting, unauthorized signaling, grant scope, revocation, persistence
+after restart and malformed input.
+
+Provide a reproducible local two-device or two-agent integration harness.
+Do not describe mocked authentication as a successful authenticated session.
+
+DELIVERABLES
+
+- Working implementation and meaningful tests.
+- Protocol and storage documentation.
+- Development configuration with no live secrets.
+- Exact commands to pair two development instances.
+- Updated progress and platform support documents.
+
+Complete this phase as far as available tools allow. Report concrete blockers
+and do not mark incomplete security boundaries as ready.
+END PROMPT
+
+4. THIRD PROMPT — WORKING P2P AND RELAY FALLBACK
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and docs/PROGRESS.md.
+
+Implement Phase 2B: authenticated WebRTC connectivity with direct P2P and
+TURN relay fallback.
+
+Inspect Phase 2A first. Fix blocking identity or authorization gaps before
+exposing session channels.
+
+REQUIREMENTS
+
+1. Implement actual WebRTC connectivity between authorized devices.
+2. The native agent must own or support transport independently of an open
+   Electron window, so headless and unattended operation remain possible.
+3. Evaluate maintained native WebRTC options against Windows, Ubuntu, macOS
+   x64/ARM64 and Linux ARM64. Document the selected implementation and build
+   requirements before integrating it.
+4. Bind the negotiated session cryptographically to authenticated peer identities.
+   Verify session freshness and prevent signaling/session substitution.
+5. Use ICE with configured STUN and TURN servers.
+6. Support automatic routing and a relay-only diagnostic mode.
+7. Obtain short-lived TURN credentials from the authenticated coordinator.
+   Never distribute the TURN shared secret to clients.
+8. Add connection states, timeouts, cancellation, bounded retries, reconnection
+   backoff and cleanup.
+9. Reauthenticate and reauthorize after reconnect.
+10. Show the selected route, connection state and useful diagnostics.
+    Distinguish host/direct, server-reflexive/direct and relayed candidates.
+11. Create bounded data channels with message validation and backpressure.
+12. Implement a harmless authenticated ping/status exchange as the first
+    end-to-end session. Do not introduce arbitrary command execution.
+13. Prepare a reproducible local coturn test environment with generated test
+    secrets, allocation quotas and private-destination protections.
+14. Keep local-test configuration clearly separate from production configuration.
+
+VALIDATION
+
+Run genuine two-peer tests where possible:
+- Same machine using separate identities.
+- Same LAN.
+- Forced TURN relay.
+- Disconnect and reconnect.
+- Invalid identity and unauthorized capability rejection.
+- TURN credential expiry and allocation failure.
+- Large or malformed messages and queue exhaustion.
+
+For separate internet connections, CGNAT, blocked UDP and TURN/TLS fallback,
+provide an exact manual test procedure if the environment cannot reproduce them.
+Record selected ICE candidate evidence for tests that actually ran.
+
+Do not claim successful relay fallback based only on configuration or mocks.
+
+Deliver working code, test commands, diagnostic instructions and updated docs.
+END PROMPT
+
+5. FOURTH PROMPT — PREPARE UTHO DEPLOYMENT
+
+This prepares the server setup without changing your existing Utho services.
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Prepare a deployable staging setup for the coordination service and coturn
+on an Ubuntu Utho VPS.
+
+This task authorizes repository configuration and documentation only.
+Do not connect to or modify a live server, DNS or firewall.
+
+REQUIREMENTS
+
+1. Inspect the implemented services and derive actual deployment requirements.
+2. Provide a production build and service configuration for the Node.js
+   coordinator, running as a dedicated unprivileged account.
+3. Configure HTTPS/WSS ingress with health checks and appropriate timeouts.
+4. Provide a validated coturn configuration generator that rejects missing
+   placeholders, weak/default secrets and invalid network settings.
+5. Keep secrets in protected runtime configuration outside the repository.
+6. Include TURN UDP/TCP/TLS listeners, relay port ranges and firewall guidance.
+7. Explain the public/private IP mapping when the VPS is behind NAT.
+8. Preserve existing Nginx, MQTT and ArchidTech services.
+9. Do not place TURN behind an ordinary HTTP reverse-proxy location.
+10. If TURN/TLS on port 443 is needed, document a dedicated IP or appropriate
+    reviewed L4 setup. Detect port conflicts before installation.
+11. Include TLS certificate renewal, log rotation, resource limits, monitoring,
+    backup, upgrade and rollback procedures.
+12. Include quotas and private-network/metadata destination protections.
+13. Provide install, validate, upgrade and uninstall scripts with safe defaults.
+    Validate inputs and avoid deleting unrelated files or services.
+14. Document required DNS names, IP addresses, ports and credentials without
+    inventing actual values.
+15. Include server-side smoke tests and two-device client connection tests.
+
+Create docs/DEPLOY_UTHO.md with commands in execution order, clearly separating
+the developer machine from commands run on the VPS.
+
+Test configurations locally where possible. Report any unvalidated settings.
+Finish with the exact information needed from me for a real staging deployment.
+END PROMPT
+
+6. FIFTH PROMPT — REMOTE DESKTOP AND QUALITY CONTROLS
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Implement Phase 3: real remote desktop viewing and keyboard/mouse control.
+
+Confirm authenticated P2P/relay transport works before integrating desktop access.
+Use the native agent as the host enforcement boundary.
+
+REQUIREMENTS
+
+1. Migrate the desktop interface to React with JavaScript/JSX while preserving
+   saved devices and existing pairing/connectivity features.
+2. Implement native screen capture and remote keyboard/mouse input adapters.
+3. Either installation can act as controller or host, subject to permission.
+4. Enforce desktop.view and desktop.control separately at the host.
+5. Implement the available host platform end to end first, then add actual
+   adapters for the remaining targets. Unsupported adapters must return clear
+   capability errors, never simulated success.
+6. Support monitor selection, DPI scaling, coordinate transforms, keyboard
+   layouts and screen-size changes.
+7. Handle input ordering and release held keys/buttons on session termination.
+8. Add Auto, Clear text, Smooth motion and Low bandwidth modes.
+9. Adapt bitrate, resolution and frame rate using measured network and encoder
+   performance. Show useful connection/quality statistics.
+10. Use hardware encoding only where detected and verified; provide a bounded
+    software fallback where practical.
+11. Provide a visible host session indicator and local Disconnect control.
+12. Guide macOS screen-recording/Accessibility permissions and Ubuntu
+    X11/Wayland permissions without bypassing OS protections.
+13. Keep the renderer sandboxed and privileged APIs narrowly scoped.
+14. Avoid leaving unnecessary capture running after disconnect or revocation.
+
+VALIDATION
+
+- Real capture and control on available hardware.
+- View-only sessions cannot inject input.
+- Direct and relay desktop sessions.
+- Monitor/DPI changes and coordinate accuracy.
+- Reconnect, revocation and input cleanup.
+- Bandwidth contention and quality-mode behavior.
+- Permission denial and unsupported/headless environments.
+
+Document login-screen, secure-desktop, FileVault and Wayland limitations.
+Cross-compilation alone must not count as runtime support.
+
+Deliver runnable code, available-platform evidence, manual procedures for other
+platforms and updated progress/support documents.
+END PROMPT
+
+7. SIXTH PROMPT — SSH AND FILE TRANSFER
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Implement Phase 4: real SSH and bidirectional resumable file transfer over
+the authenticated connection.
+
+SSH REQUIREMENTS
+
+1. Add an integrated terminal using a maintained terminal component.
+2. Tunnel actual SSH protocol traffic to an explicitly approved SSH endpoint
+   on the destination device.
+3. Preserve normal SSH authentication and host-key verification.
+4. Clearly handle first-use host-key approval and changed-key rejection.
+5. Keep credentials out of renderer storage, logs and configuration files.
+6. Enforce the ssh capability at the host.
+7. Do not expose unrestricted TCP forwarding into the destination network.
+8. Handle resize, cancellation, disconnect and session cleanup.
+9. If an SSH server is unavailable, explain how to enable it on that platform.
+   Do not silently install or enable system services.
+10. Do not label a custom agent command shell as SSH.
+
+FILE REQUIREMENTS
+
+1. Implement a two-pane local/remote file manager.
+2. Enforce files.read and files.write separately.
+3. Restrict operations to approved filesystem roots and OS user permissions.
+4. Support bidirectional files and folders, progress, cancellation, collision
+   handling and resuming interrupted transfers.
+5. Use bounded chunks, backpressure, integrity checks and atomic completion.
+6. Defend against traversal, symlink/reparse-point escapes, path races,
+   malicious filenames and Windows/macOS/Linux path differences.
+7. Reauthorize resumed transfers and verify that the source/destination
+   still matches the transfer manifest.
+8. Limit file-transfer bandwidth so desktop and input remain responsive.
+9. Handle disk-full, permission-denied, file-changed and connection-lost errors.
+10. Clean temporary files according to a documented retention policy.
+
+TESTS
+
+Include host-key changes, unauthorized SSH, read-only file access, traversal,
+symlink escape, large-file transfer, corruption, restart/resume, disk errors,
+revocation mid-transfer and desktop/file contention.
+
+Run genuine integrations where possible. Update commands, progress and
+platform support documentation with actual results.
+END PROMPT
+
+8. SEVENTH PROMPT — OPERATIONAL UNATTENDED ACCESS
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Implement Phase 5: complete unattended-access lifecycle and background services.
+
+The existing policy module is not sufficient. Wire authorization, persistence,
+service startup and live-session termination end to end.
+
+REQUIREMENTS
+
+1. Unattended access is OFF by default.
+2. Enabling it requires deliberate local owner action and required OS permissions.
+3. Trust specific verified controller identities with scoped permissions.
+4. Provide grant expiry, renewal, revocation and trusted-device management.
+5. Saved bookmarks alone must never grant access.
+6. Run the native agent independently of the Electron window.
+7. Add appropriate Windows service, Ubuntu systemd and macOS launch service/
+   user-session integration with minimum necessary privileges.
+8. Separate privileged service functions from interactive desktop capture/input.
+9. Authenticate local IPC and restrict it to intended users/services.
+10. Revalidate authorization at connection time and for ongoing operations.
+11. Expiry, revocation and disabling unattended access must terminate affected
+    active channels and release input/capture/SSH/file resources.
+12. Remote revocation must show pending until the host acknowledges it.
+    Use bounded authorization leases where online revocation guarantees require
+    them; fail closed on expired leases.
+13. Support a local Disconnect and Disable unattended access action.
+14. Persist metadata with SQLite migrations; protect identity keys and secrets.
+15. Reinstallation or identity changes require re-pairing.
+16. Add security event history without collecting keystrokes, passwords or screen
+    contents by default.
+17. Handle restart, sleep/wake, network changes, clock anomalies and stale sessions.
+18. Document which platforms support logged-in sessions, login screens and
+    headless SSH/files. Never promise bypass of OS preboot protections.
+
+VALIDATION
+
+Test window closure, agent restart, OS reboot where available, grant expiry,
+revocation during active operations, offline revocation, controller key change,
+database migration and unauthorized local IPC.
+
+Provide service install/uninstall commands for test machines and describe
+exactly what system changes they make. Do not install privileged services on
+the current machine without the required authorization.
+
+Deliver working lifecycle code and a reproducible two-device acceptance guide.
+END PROMPT
+
+9. EIGHTH PROMPT — COMPLETE INSTALLERS AND UPDATES
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Implement Phase 6A: complete application packaging, installation and updates.
+
+REQUIREMENTS
+
+1. Produce reproducible build configurations for:
+   - Windows x64 installer.
+   - macOS Intel installer.
+   - macOS Apple Silicon installer.
+   - Ubuntu x64 DEB.
+   - Supported Linux ARM64 DEB.
+   - Headless Linux agent package.
+2. Bundle the application runtime and native agent so end users do not need
+   Node.js, npm, Cargo or developer tools.
+3. Account for OS-provided dependencies explicitly.
+4. Bundle the correct native binaries for each target architecture.
+5. Install background services only through a documented consent/elevation flow.
+6. Add repair, upgrade and uninstall behavior that preserves or removes user
+   data according to explicit user choice.
+7. Implement authenticated update metadata and artifact verification with a
+   documented signing/key-rotation and rollback-protection design.
+8. Keep signing credentials in protected CI secrets.
+9. Configure Windows signing and macOS signing/notarization when credentials
+   exist. Otherwise produce clearly labeled unsigned development artifacts.
+10. Add least-privilege GitHub Actions workflows and lock dependencies.
+11. Generate checksums, dependency/license notices and an SBOM.
+12. Do not publish a release or upload signing material without authorization.
+13. Record exact supported OS versions and architecture requirements.
+
+VALIDATION
+
+Build available targets and inspect their packaged contents.
+Test clean-machine installation, launch, service operation, upgrade and uninstall
+on available targets. Mark all unavailable-platform checks as pending.
+
+Create docs/BUILD_AND_RELEASE.md and docs/INSTALLATION.md with exact commands,
+artifact locations, prerequisites and known limitations.
+
+Do not claim a complete supported platform solely because a CI archive exists.
+END PROMPT
+
+10. NINTH PROMPT — SECURITY REVIEW AND RELEASE ACCEPTANCE
+
+BEGIN PROMPT
+Continue WII Ultra Desk using AGENTS.md and current progress.
+
+Perform Phase 6B: security hardening and pilot release acceptance.
+
+Scope is this repository, local test environments and explicitly authorized
+test infrastructure only.
+
+TASKS
+
+1. Review the implemented threat model against the actual architecture.
+2. Inspect authentication, pairing, key storage, identity binding, replay
+   protection, grant scope and revocation.
+3. Review Electron sandbox/preload/IPC boundaries and local agent IPC.
+4. Review native privilege boundaries and service installation.
+5. Review SSH host-key handling and permitted tunnel destinations.
+6. Review file transfer roots, path traversal, symlink/reparse-point races,
+   resource exhaustion and resume integrity.
+7. Review TURN credential issuance, allocation abuse and network restrictions.
+8. Review updater signing, metadata validation and rollback handling.
+9. Run dependency/security checks and meaningful protocol/parser fuzz tests
+   where supported.
+10. Test reconnection, malformed messages, failed authentication floods,
+    bounded memory/queues and service crashes in the test environment.
+11. Fix confirmed findings and add regression tests.
+12. Produce a findings report with severity, reproduction, affected code,
+    remediation, retest status and residual risk.
+13. Create a release acceptance matrix for each platform and feature.
+14. Separate automated tests, manual tests, unavailable tests and independent
+    assessment requirements.
+15. Do not claim vulnerability-free software or an independent audit.
+
+Finish with:
+- Confirmed fixed and remaining findings.
+- Actual commands and test results.
+- Features/platforms ready for a limited pilot.
+- Features/platforms blocked.
+- Exact remaining release requirements.
+
+Do not publish or deploy automatically.
+END PROMPT
+
+11. PROMPT FOR CONTINUING AFTER AN INTERRUPTION
+
+Start Codex in the repository again, or run:
+codex resume
+to select a saved session.
+
+BEGIN PROMPT
+Resume WII Ultra Desk development.
+
+Read AGENTS.md, docs/PROGRESS.md, the current implementation plan and git status.
+Inspect the actual code and recent changes before relying on progress notes.
+
+Identify the active phase and continue its next incomplete implementation task.
+Preserve existing work. Do not restart the project or repeat completed changes.
+
+Run the relevant checks, fix failures and update progress with actual evidence.
+Do not move to a later phase while a blocking dependency remains unresolved.
+
+If an external dependency blocks one task, complete independent work within the
+current phase and report the precise remaining requirement.
+END PROMPT
+
+12. PROMPT FOR REVIEWING AND SAVING A COMPLETED STAGE
+
+BEGIN PROMPT
+Review the changes made for the current WII Ultra Desk stage.
+
+1. Inspect the full diff and git status.
+2. Identify correctness, security, compatibility and regression risks.
+3. Fix confirmed issues and run relevant tests.
+4. Confirm documentation accurately states implemented and tested behavior.
+5. Check for secrets, generated binaries and unrelated files.
+6. Stage only files belonging to this stage.
+7. Create a clear local Git commit summarizing the completed work.
+8. Report the commit ID, remaining changes and test results.
+
+Do not push, merge or publish. If user changes are mixed into the same files,
+preserve them and avoid including them without clear attribution.
+END PROMPT
+
+REFERENCE
+Codex CLI: https://learn.chatgpt.com/docs/codex/cli
+AGENTS.md: https://learn.chatgpt.com/docs/agent-configuration/agents-md
+
+Start with the foundation-readiness prompt in section 2, then Phase 2A.

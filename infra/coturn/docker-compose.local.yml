@@ -1,0 +1,22 @@
+# Local-only reproducibility fixture.  It intentionally publishes a tiny relay
+# range and has no TLS material.  Do not adapt it into a production deployment.
+services:
+  coturn:
+    image: coturn/coturn:4.18.0-r0
+    restart: "no"
+    command:
+      - -c
+      - /etc/coturn/turnserver.conf
+      - --static-auth-secret=${WII_TURN_SHARED_SECRET:?run generate-local-env.mjs first}
+    volumes:
+      - ./turnserver.local.conf:/etc/coturn/turnserver.conf:ro
+    ports:
+      - 127.0.0.1:3478:3478/tcp
+      - 127.0.0.1:3478:3478/udp
+      - 127.0.0.1:49160-49170:49160-49170/udp
+    read_only: true
+    tmpfs:
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
